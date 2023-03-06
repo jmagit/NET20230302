@@ -2,10 +2,14 @@
 using Biblioteca;
 using Demos;
 using Demos.Curso;
+using Demos.Cursos;
+using System.Reflection;
 
 var nombre = "mundo";
 //nombre[2] = '4';
+if(nombre == "") {
 
+}
 #if DEBUG
 Console.WriteLine($"Hola, {nombre}!"[2..5]);
 #endif
@@ -28,8 +32,8 @@ m[0, 0] = 3;
 
 var c = new Demos.Documentada();
 if(c != null && c.suma(2, 2) == 4) {
-	mm[2] = t;
-	m[0, 0] = 3;
+    mm[2] = t;
+    m[0, 0] = 3;
 }
 var i = c.suma(2, 2);
 int j = 1;
@@ -46,14 +50,14 @@ obj = DateTime.Now;
 bool b = true;
 if(!b) { }
 if(obj is Demos.Documentada cc) {
-	c = ((Demos.Documentada)obj);
+    c = ((Demos.Documentada)obj);
 
-} else if(obj is SubDocumento) { 
-	c = ((Demos.Documentada)obj);
+} else if(obj is SubDocumento) {
+    c = ((Demos.Documentada)obj);
 
 }
 if(c is DateTime) {
-	c = ((Demos.Documentada)obj);
+    c = ((Demos.Documentada)obj);
 
 }
 //obj = c?.p?.a?.suma() ?? 0;
@@ -77,9 +81,52 @@ try {
 
 } catch(BadImageFormatException ex) {
 
-	throw new Exception("", ex);
+    throw new Exception("", ex);
 } catch(Exception ex) {
-	
-	throw new Exception("", ex);
+
+    throw new Exception("", ex);
 }
+
+Persona p1 = new Profesor(67), p2 = new Alumno() { Edad = 44, FechaNacimiento = DateTime.Now, [0] = 9, [1] = 5 };
+
+foreach(var nota in (p2 as Alumno)) {
+    Console.WriteLine(p1);
+    if(nota == 5) break;
+}
+foreach(var nota in (p2 as Alumno)) {
+    Console.WriteLine(p1);
+    if(nota == 5) break;
+}
+
+(p2 as Alumno).Notas[0] = -1;
+
+var rslt = p2.Calcula(c.resta);
+rslt = p2.Calcula(c.genera(3));
+rslt = p2.Calcula(delegate (decimal a, decimal b) { return a / b; });
+
+j = (int)p1;
+
+if(p1 > p2 || p1 < 23 || p1 == j) {
+
+}
+
+Console.WriteLine(p1);
+
+PropertyChangeEventHandler cntl1 = delegate (object sender, PropertyChangeEventArgs args) {
+    //Console.WriteLine(sender.ToString());
+    (sender as Persona).Pintate();
+};
+PropertyChangeEventHandler cntl2 = delegate (object sender, PropertyChangeEventArgs args) {
+    if(args.Property == "Edad")
+        Console.WriteLine("Cambia la edad");
+    args.Cancel = true;
+};
+
+p1.PropertyChange += cntl1;
+p1.PropertyChange += cntl2;
+p2.PropertyChange += cntl1;
+p1.Edad = 33;
+p2.Edad = 32;
+p1.PropertyChange -= cntl2;
+p1.Edad = 32;
 

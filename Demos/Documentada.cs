@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Demos.Cursos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,36 +39,51 @@ namespace Demos {
             suma(4, c: 4);
             return nameof(suma);
         }
+        public decimal resta(decimal a, decimal b) {
+            return a - b;
+        }
 
+        public decimal multiplica(decimal a, decimal b) {
+            return a * b;
+        }
+        public OperacionBinaria genera(int i) {
+            switch(i) {
+                case 1:
+                case 2:
+                    return resta;
+                default:
+                    return multiplica;
+            }
+        }
         #endregion
     }
 }
 
 namespace Demos.Curso {
     public class Documentada {
-            #region Atributos
+        #region Atributos
 
-            #endregion
+        #endregion
+        #region Métodos
+
+        /// <summary>
+        ///     Suma dos valores
+        /// </summary>
+        /// <param name="a">Operando 1</param>
+        /// <param name="b">Operando 2</param>
+        /// <returns>Suma de los valores</returns>
+        public decimal suma(decimal a, decimal b) {
             #region Métodos
-
-            /// <summary>
-            ///     Suma dos valores
-            /// </summary>
-            /// <param name="a">Operando 1</param>
-            /// <param name="b">Operando 2</param>
-            /// <returns>Suma de los valores</returns>
-            public decimal suma(decimal a, decimal b) {
-                #region Métodos
-                return a + b;
-                #endregion
-            }
-            public string nombre() {
-                return nameof(suma);
-            }
+            return a + b;
             #endregion
         }
+        public string nombre() {
+            return nameof(suma);
+        }
+        #endregion
+    }
 
-        public class SubDocumento : Demos.Documentada {
+    public class SubDocumento : Demos.Documentada {
 
     }
 }
