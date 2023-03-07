@@ -1,11 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Demos.Cursos {
+    public static class Validaciones {
+
+        public static bool EsMaxLenght(this string value, int max) {
+            return value.Length <= max;
+        }
+        public static bool NoEsMaxLenght(this string value, int max) {
+            return !EsMaxLenght(value, max);
+        }
+        public static bool EsUpperCase(this string value) {
+            return value == value.ToUpper();
+        }
+        public static bool EsNIF(this string value) {
+            return true;
+        }
+        public static bool EsPositivo(this int value) {
+            return value > 0;
+        }
+    }
     public enum Estado {
         Aprobado, Suspendido
     }
@@ -27,23 +46,29 @@ namespace Demos.Cursos {
     }
     public delegate void PropertyChangeEventHandler(object sender, PropertyChangeEventArgs args);
 
+    public record Coordenada(int X, int Y) { }
+
     public abstract class Persona : IGrafico, IDisposable {
+        private static List<int> lista;
+        static Persona() {
+            lista = new List<int>();
+        }
+
         public const int EDAD_MINIMA = 16;
         public readonly int EDAD_JUBILACION = 67;
 
         private int id;
-        private string nombre, apellidos;
+        private string nombre = "Pepito", apellidos = "Grillo";
         private byte edad;
         private bool activo = true;
         private DateTime fechaBaja;
         private bool disposedValue;
 
-        public event PropertyChangeEventHandler PropertyChange;
+        public event Action<object, PropertyChangeEventArgs> PropertyChange;
+        //public event PropertyChangeEventHandler PropertyChange;
 
         public int Edad { 
-            get {
-                return (int)edad;
-            }
+            get => (int)edad;
             set {
                 if(value == edad) return;
                 if(value < EDAD_MINIMA || value > EDAD_JUBILACION)
@@ -84,6 +109,15 @@ namespace Demos.Cursos {
             this.apellidos = apellidos;
         }
 
+        public string dameNulo() {
+            return null;
+        }
+        public string? dameNulo(string nom) {
+            if(nom == null) {
+                throw new ArgumentNullException(nameof(nom));
+            }
+            return null;
+        }
         public virtual void Jubilate(DateTime? fecha = null, bool a = false) {
             if(!activo)
                 throw new Exception("Ya esta jubilado");
@@ -123,6 +157,7 @@ namespace Demos.Cursos {
             return edad > persona.edad;
         }
 
+        [Obsolete]
         public decimal Calcula(OperacionBinaria calc) {
             return calc(id, edad);
         }
@@ -193,6 +228,16 @@ namespace Demos.Cursos {
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        public (int min, int max) RangoEdades {
+            get => (EDAD_MINIMA, EDAD_JUBILACION);
+        }
+        public void Deconstruct(out int id, out string name, out string apellidos) {
+            id = this.id;
+            name = this.nombre;
+            apellidos = this.apellidos;
+        }
+
     }
 
     public partial class Profesor : Persona {
@@ -282,7 +327,10 @@ namespace Demos.Cursos {
         }
 
         public object Clone() {
-            Alumno copia = MemberwiseClone() as Alumno;
+            Alumno copia = new Alumno() {
+                
+            };
+            // MemberwiseClone() as Alumno;
             if(notas is ICloneable n) {
                 copia.notas = n.Clone() as int[];
             }

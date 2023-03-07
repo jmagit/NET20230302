@@ -3,7 +3,13 @@ using Biblioteca;
 using Demos;
 using Demos.Curso;
 using Demos.Cursos;
+using Demos.Genericos;
 using System.Reflection;
+using System.Runtime.Intrinsics.Arm;
+using System.Xml.Linq;
+
+//Tareas.proc2();
+//return;
 
 var nombre = "mundo";
 //nombre[2] = '4';
@@ -103,6 +109,7 @@ foreach(var nota in (p2 as Alumno)) {
 var rslt = p2.Calcula(c.resta);
 rslt = p2.Calcula(c.genera(3));
 rslt = p2.Calcula(delegate (decimal a, decimal b) { return a / b; });
+rslt = p2.Calcula((a, b) => (decimal)a/b);
 
 j = (int)p1;
 
@@ -112,11 +119,13 @@ if(p1 > p2 || p1 < 23 || p1 == j) {
 
 Console.WriteLine(p1);
 
-PropertyChangeEventHandler cntl1 = delegate (object sender, PropertyChangeEventArgs args) {
+var cntl1 = delegate (object sender, PropertyChangeEventArgs args) {
     //Console.WriteLine(sender.ToString());
     (sender as Persona).Pintate();
 };
-PropertyChangeEventHandler cntl2 = delegate (object sender, PropertyChangeEventArgs args) {
+cntl1 = (s, a) => (s as Persona).Pintate();
+
+var cntl2 = delegate (object sender, PropertyChangeEventArgs args) {
     if(args.Property == "Edad")
         Console.WriteLine("Cambia la edad");
     args.Cancel = true;
@@ -129,4 +138,101 @@ p1.Edad = 33;
 p2.Edad = 32;
 p1.PropertyChange -= cntl2;
 p1.Edad = 32;
+
+//var prov1 = new Elemento() { Key = 1, Value = "Madrid" };
+//var prov2 = new Elemento() { Key = "kk", Value = "Barcelona" };
+
+var prov1 = new Elemento<int, string>(1,"Madrid");
+var prov2 = new Elemento<string, string>("08", "Barcelona");
+var prov3 = new Elemento<int, string>(8, "Barcelona");
+
+prov1 = prov3;
+
+Console.WriteLine(prov1.GetType().Name);
+Console.WriteLine(prov2.GetType().Name);
+
+DateTime dd = prov1.conv<DateTime>(DateTime.Now);
+
+Action<int, int> proc = (a, b) => j = a + b;
+Func<double, bool> f;
+f = item => {
+    return item > 0; 
+};
+f = delegate(double item) { return item > 0; };
+
+Nullable<int> intnull = null;
+var cad = "";
+if(Validaciones.EsNIF(cad) && Validaciones.EsMaxLenght(cad, 10)) {
+
+}
+if(cad.EsNIF() && cad.NoEsMaxLenght(10)) {
+
+}
+
+var ele = new { Id = 28, Name = "Madrid" };
+
+//Console.WriteLine(ele.GetType().Name);
+
+
+//(int min, int max) rango = p1.RangoEdades;
+//Console.WriteLine($"min: {rango.min} max: {rango.max} ");
+//rango.max = 10;
+//Console.WriteLine($"min: {rango.min} max: {rango.max} ");
+//var tupla = (28, "Madrid");
+//Console.WriteLine($"id: {tupla.Item1} name: {tupla.Item2} ");
+
+//(int min, int max) = p1.RangoEdades;
+//Console.WriteLine($"min: {min} max: {max} ");
+
+//(min, max) = (max, min);
+//Console.WriteLine($"min: {min} max: {max} ");
+
+//(_, int otra, _, int otroMas) = (1,2,3,4);
+//Console.WriteLine($"otra: {otra} {otroMas} ");
+
+//(int idP, string nomP, string apeP) = p1;
+//Console.WriteLine($"idP: {idP} nomP: {nomP} apeP: {apeP} ");
+
+int min = -1;
+Console.WriteLine($"valor: {min switch { 1 => "uno", 2 => "dos", _ => "otros" } } ");
+
+//switch(p1 as Persona) {
+//    case Profesor:
+//        Console.WriteLine("Profe");
+//        break;
+
+//}
+
+switch(min) {
+    case 1 or 2 or 3:
+    case < 0:
+        Console.WriteLine("Negativo");
+        break;
+    case 0:
+        Console.WriteLine("Cero");
+        break;
+    case > 0:
+        Console.WriteLine("Positivo");
+        break;
+}
+
+//string? nonulo = null;
+////nonulo = p1.dameNulo(null); 
+//Console.WriteLine(nonulo.Length);
+
+var punto = new Coordenada(0, 0);
+Console.WriteLine($"X: {punto.X} Y: {punto.Y} ");
+punto = punto with { X= 5 };
+Console.WriteLine($"X: {punto.X} Y: {punto.Y} ");
+
+int page = 0, rows = 10;
+bool paginar = true;
+List<Persona> personas = new List<Persona>();
+var query = personas.Where(item => item.Edad > 55)
+    .Distinct()
+    .Select(item => item.Edad);
+if(paginar)
+    query = query.Skip(page * rows).Take(rows);
+
+var result = query.Sum();
 

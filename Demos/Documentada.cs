@@ -46,6 +46,8 @@ namespace Demos {
         public decimal multiplica(decimal a, decimal b) {
             return a * b;
         }
+        public decimal divide(decimal a, decimal b)  => a * b;
+
         public OperacionBinaria genera(int i) {
             switch(i) {
                 case 1:
