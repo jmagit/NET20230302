@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "MisFunciones": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7777"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 32010,
+      "useSSL": false
+    }
+  }
+}
