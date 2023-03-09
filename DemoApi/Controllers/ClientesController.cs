@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using DemoApi.Models;
 
 namespace DemoApi.Controllers {
+    public class ClienteDTO {
+        public int CustomerId { get; set; }
+        public string Name { get; set; }
+
+    }
     [Route("api/[controller]")]
     [ApiController]
     public class ClientesController : ControllerBase {
@@ -19,13 +24,13 @@ namespace DemoApi.Controllers {
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers() {
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetCustomers() {
             if(_context.Customers == null) {
                 return NotFound();
             }
             return await _context.Customers
-                .Where(f => f.LastName.Length > 3)
-                .OrderBy(f => f.LastName)
+                .Select(f => new ClienteDTO() { CustomerId = f.CustomerId, Name = f.FirstName })
+                .OrderBy(f => f.Name)
                 .ToListAsync();
         }
 
