@@ -148,7 +148,7 @@ namespace MisFunciones {
         [FunctionName("Periodic_Loop")]
         public static async Task RunPeriodic(
             [OrchestrationTrigger] IDurableOrchestrationContext context) {
-            Console.WriteLine(await context.CallActivityAsync<string>(nameof(DuracionVariable), 0));
+            Console.WriteLine("\n-----------------> " + await context.CallActivityAsync<string>(nameof(DuracionVariable), 0) + "\n");
             DateTime nextIteration = context.CurrentUtcDateTime.AddSeconds(5);
             await context.CreateTimer(nextIteration, CancellationToken.None);
             context.ContinueAsNew(null);
